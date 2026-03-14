@@ -26,19 +26,27 @@
     </video>
     <script>
         const video = document.querySelector('video');
+        let lastLoggedSecond = -1;
 
-        video.addEventListener('ended', () => {
-            console.log('[video] ended — switching to reverse');
-            video.playbackRate = -1;
+        video.addEventListener('loadedmetadata', () => {
+            console.log(`[video] metadata loaded — duration: ${video.duration.toFixed(2)}s`);
             video.play();
         });
 
+        video.addEventListener('play', () => {
+            console.log(`[video] play fired — currentTime: ${video.currentTime.toFixed(2)}`);
+        });
+
         video.addEventListener('timeupdate', () => {
-            if (video.playbackRate < 0 && video.currentTime <= 0) {
-                console.log('[video] reverse done — switching to forward');
-                video.playbackRate = 1;
-                video.play();
+            const second = Math.floor(video.currentTime);
+            if (second !== lastLoggedSecond) {
+                lastLoggedSecond = second;
+                console.log(`[forward] currentTime: ${video.currentTime.toFixed(2)}s — remaining: ${(video.duration - video.currentTime).toFixed(2)}s`);
             }
+        });
+
+        video.addEventListener('ended', () => {
+            console.log('[video] ended');
         });
     </script>
 </body>
