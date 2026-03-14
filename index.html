@@ -26,14 +26,19 @@
     </video>
     <script>
         const video = document.querySelector('video');
-        const forwardSrc = 'Macaca%20fuscata.mp4';
-        const reverseSrc = 'Macaca%20fuscata%20reversed.mp4';
 
         video.addEventListener('ended', () => {
-            const isForward = !video.currentSrc.includes('reversed');
-            console.log(`[video] ended — switching to ${isForward ? 'reverse' : 'forward'}`);
-            video.src = isForward ? reverseSrc : forwardSrc;
+            console.log('[video] ended — switching to reverse');
+            video.playbackRate = -1;
             video.play();
+        });
+
+        video.addEventListener('timeupdate', () => {
+            if (video.playbackRate < 0 && video.currentTime <= 0) {
+                console.log('[video] reverse done — switching to forward');
+                video.playbackRate = 1;
+                video.play();
+            }
         });
     </script>
 </body>
